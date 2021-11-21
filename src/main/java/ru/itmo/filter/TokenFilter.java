@@ -20,8 +20,8 @@ public class TokenFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         servletResponse.getOutputStream().flush();
         try {
-            if (servletRequest.getParameterMap().containsKey("token")) {
-                String token = servletRequest.getParameterMap().get("token")[0];
+            if (servletRequest.getParameterMap().containsKey("login")) {
+                String token = servletRequest.getParameterMap().get("login")[0];
                 if (tokenDataService.checkById(token)){
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
