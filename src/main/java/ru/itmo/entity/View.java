@@ -20,4 +20,5 @@ public class View {
     public interface Contract { }
     public interface Auction { }
     public interface Article { }
+    public interface Comment { }
 }

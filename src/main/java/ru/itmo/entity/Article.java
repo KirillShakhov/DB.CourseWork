@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 //CREATE TABLE "articles" (
 //        "id_articles" bigserial ,
@@ -53,6 +54,11 @@ public class Article {
     @Temporal(TemporalType.DATE)
     @JsonView(View.Article.class)
     private Date create_date;
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.Comment.class)
+    private List<Comment> replies;
 
     @Override
     public String toString() {

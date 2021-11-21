@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 //CREATE TABLE "cars" (
@@ -65,6 +66,11 @@ public class Car {
     @JoinColumn(name = "bumper")
     @JsonView(View.Car.class)
     private Series bumper;
+
+    @OneToMany(mappedBy = "car", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.Comment.class)
+    private List<Comment> replies;
 
     @Override
     public String toString() {
