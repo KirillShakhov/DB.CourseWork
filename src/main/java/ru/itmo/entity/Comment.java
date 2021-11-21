@@ -67,5 +67,4 @@ public class Comment {
     @Temporal(TemporalType.DATE)
     @JsonView(View.Article.class)
     private Date create_date;
-
 }

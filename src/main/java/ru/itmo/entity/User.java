@@ -78,6 +78,14 @@ public class User {
     @JsonView(View.User.class)
     private List<Article> articles;
 
+    public User(String login, String pass) {
+        this.username = login;
+        this.first_name = login;
+        this.email = login;
+        this.pass = pass;
+        this.registration_date = java.util.Calendar.getInstance().getTime();
+    }
+
     @Override
     public String toString() {
         return "User{" +
