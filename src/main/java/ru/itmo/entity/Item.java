@@ -59,6 +59,9 @@ public class Item {
     @JsonView(View.Item.class)
     private User owner;
 
+    @OneToOne(mappedBy = "item")
+    private PurchaseItems purchase_items;
+
     @Override
     public String toString() {
         return "Item{" +

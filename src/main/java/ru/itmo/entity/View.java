@@ -16,4 +16,5 @@ public class View {
     public interface Car { }
     public interface Photo { }
     public interface Item { }
+    public interface PurchaseItems { }
 }
