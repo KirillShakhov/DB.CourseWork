@@ -45,6 +45,17 @@ public class Creator {
     @JsonView(View.Creator.class)
     private List<Wheels> wheels;
 
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.Creator.class)
+    private List<Bumper> bumpers;
+
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.Creator.class)
+    private List<Car> cars ;
+
+
     @Override
     public String toString() {
         return "Creator{" +
