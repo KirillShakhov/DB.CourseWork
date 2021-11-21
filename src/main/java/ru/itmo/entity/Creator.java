@@ -55,6 +55,10 @@ public class Creator {
     @JsonView(View.Creator.class)
     private List<Car> cars ;
 
+    public Creator(User user) {
+        this.creator = user;
+        this.creation_date = java.util.Calendar.getInstance().getTime();
+    }
 
     @Override
     public String toString() {

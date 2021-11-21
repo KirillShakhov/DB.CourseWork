@@ -85,7 +85,8 @@ public class AuthController {
                                     @RequestParam("first_name") String first_name,
                                     @RequestParam("last_name") String last_name,
                                     @RequestParam("email") String email,
-                                    @RequestParam("biography") String biography
+                                    @RequestParam("biography") String biography,
+                                    @RequestParam("creator") boolean creator
                                     ) {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
@@ -99,6 +100,9 @@ public class AuthController {
             u.setFirst_name(first_name);
             u.setLast_name(last_name);
             u.setEmail(email);
+            if(creator && u.getCreator()==null) {
+                userDataService.saveCreator(u);
+            }
             userDataService.save(u);
             return map;
         } catch (Exception e) {

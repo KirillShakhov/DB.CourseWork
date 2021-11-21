@@ -2,7 +2,9 @@ package ru.itmo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.itmo.entity.Creator;
 import ru.itmo.entity.User;
+import ru.itmo.repository.CustomizedCreatorCrudRepository;
 import ru.itmo.repository.CustomizedUserCrudRepository;
 
 import javax.transaction.Transactional;
@@ -17,10 +19,12 @@ import java.util.Optional;
 @Service
 public class UserDataService {
     private final CustomizedUserCrudRepository customizedUserCrudRepository;
+    private final CustomizedCreatorCrudRepository customizedCreatorCrudRepository;
 
     @Autowired
-    public UserDataService(CustomizedUserCrudRepository customizedUserCrudRepository) {
+    public UserDataService(CustomizedUserCrudRepository customizedUserCrudRepository, CustomizedCreatorCrudRepository customizedCreatorCrudRepository) {
         this.customizedUserCrudRepository = customizedUserCrudRepository;
+        this.customizedCreatorCrudRepository = customizedCreatorCrudRepository;
     }
 
     @Transactional
@@ -34,8 +38,15 @@ public class UserDataService {
     }
 
     @Transactional
+    public void saveCreator(User user) {
+        customizedCreatorCrudRepository.save(new Creator(user));
+    }
+
+    @Transactional
     public Optional<User> getByLogin(String username) {
         return customizedUserCrudRepository.findByLogin(username);
     }
+
+
 }
 
