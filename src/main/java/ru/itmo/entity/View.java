@@ -14,4 +14,5 @@ public class View {
     public interface Wheels { }
     public interface Bumpers { }
     public interface Car { }
+    public interface Photo { }
 }
