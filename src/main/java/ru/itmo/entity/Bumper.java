@@ -22,7 +22,7 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "bumpers", schema = "public")
-public class Bumpers {
+public class Bumper {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_bumper")
