@@ -17,4 +17,7 @@ public class View {
     public interface Photo { }
     public interface Item { }
     public interface PurchaseItems { }
+    public interface Contract { }
+    public interface Auction { }
+    public interface Article { }
 }

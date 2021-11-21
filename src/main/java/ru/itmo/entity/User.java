@@ -73,6 +73,11 @@ public class User {
     @JsonView(View.User.class)
     private List<Item> items;
 
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.User.class)
+    private List<Article> articles;
+
     @Override
     public String toString() {
         return "User{" +
