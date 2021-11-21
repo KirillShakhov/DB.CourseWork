@@ -15,4 +15,5 @@ public class View {
     public interface Bumpers { }
     public interface Car { }
     public interface Photo { }
+    public interface Item { }
 }

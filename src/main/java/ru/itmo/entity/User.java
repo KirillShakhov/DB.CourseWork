@@ -6,6 +6,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 //CREATE TABLE "users" (
@@ -66,6 +67,11 @@ public class User {
 
     @OneToOne(mappedBy = "creator")
     private Creator creator;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.User.class)
+    private List<Item> items;
 
     @Override
     public String toString() {
