@@ -1,7 +1,9 @@
 package ru.itmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,7 +18,8 @@ import java.util.List;
 //        PRIMARY KEY ("id_creators")
 //        );
 
-
+@Getter
+@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "creators", schema = "public")
