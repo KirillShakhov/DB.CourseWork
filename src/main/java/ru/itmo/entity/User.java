@@ -1,11 +1,12 @@
 package ru.itmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +23,8 @@ import java.util.Objects;
 //        PRIMARY KEY ("id_user")
 //        );
 
+@Getter
+@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
@@ -63,6 +66,7 @@ public class User {
     private Date registration_date;
 
     @OneToOne(mappedBy = "creator")
+    @JsonView(View.User.class)
     private Creator creator;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY,
@@ -105,94 +109,5 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public Long getId_user() {
-        return id_user;
-    }
-
-    public void setId_user(Long id_user) {
-        this.id_user = id_user;
-    }
-
-    @Transactional
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getBiography() {
-        return biography;
-    }
-
-    public void setBiography(String biography) {
-        this.biography = biography;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
-    public Date getRegistration_date() {
-        return registration_date;
-    }
-
-    public void setRegistration_date(Date registration_date) {
-        this.registration_date = registration_date;
-    }
-
-    public Creator getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Creator creator) {
-        this.creator = creator;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public List<Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
     }
 }
