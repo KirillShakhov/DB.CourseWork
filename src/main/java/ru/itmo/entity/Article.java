@@ -42,7 +42,6 @@ public class Article {
 
     @Lob
     @Column(name = "text", nullable = false)
-    @JsonView(View.Article.class)
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

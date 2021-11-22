@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 //CREATE TABLE "series" (
@@ -42,7 +43,6 @@ public class Series {
 
     @Lob
     @Column(name = "description")
-    @JsonView(View.Series.class)
     private String description;
 
     @Column(name = "date_of_start", nullable = false)
@@ -54,6 +54,11 @@ public class Series {
     @Temporal(TemporalType.DATE)
     @JsonView(View.Series.class)
     private Date date_of_finish;
+
+    @OneToMany(mappedBy = "series", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonView(View.Series.class)
+    private List<Car> cars;
 
     public Series(Creator creator, String name, String description, Date date_of_start) {
         this.creator = creator;

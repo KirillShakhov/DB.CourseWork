@@ -55,7 +55,6 @@ public class Comment {
 
     @Lob
     @Column(name = "text")
-    @JsonView(View.Comment.class)
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

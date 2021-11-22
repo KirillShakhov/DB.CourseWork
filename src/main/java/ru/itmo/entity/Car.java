@@ -30,16 +30,16 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_car")
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Long id_car;
 
     @Column(name = "name", nullable = false, length = 250)
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator", nullable = false)
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Creator creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,27 +49,27 @@ public class Car {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_color")
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Color first_color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_color")
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Color second_color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wheels")
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Wheels wheels;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bumper")
-    @JsonView(View.Car.class)
+    @JsonView({View.Car.class, View.Series.class})
     private Bumper bumper;
 
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.Comment.class)
+    @JsonView(View.Car.class)
     private List<Comment> replies;
 
     public Car(Creator creator, String name, Series series) {
