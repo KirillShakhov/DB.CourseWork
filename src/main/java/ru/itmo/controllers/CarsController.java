@@ -45,7 +45,7 @@ public class CarsController {
     }
 
     @GetMapping("/api/v1/cars/groups/create")
-    public Map<String, String> createBumpers( @RequestParam("login") String login,
+    public Map<String, String> createCarsGroup( @RequestParam("login") String login,
                                              @RequestParam("pass") String pass,
                                              @RequestParam("name") String name,
                                              @RequestParam("description") String description,
@@ -63,6 +63,31 @@ public class CarsController {
             Series series = new Series(user.get().getCreator(), name, description, convertToDateViaInstant(date));
             if(date_of_finish != null && date_of_finish.equals("")) series.setDate_of_finish(convertToDateViaInstant(LocalDate.parse(date_of_finish)));
             seriesDataService.save(series);
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
+
+    @GetMapping("/api/v1/cars/groups/remove")
+    public Map<String, String> removeCarsGroup( @RequestParam("login") String login,
+                                              @RequestParam("pass") String pass,
+                                              @RequestParam("id") Long id
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+
+            Optional<Series> s = seriesDataService.getById(id);
+            if(s.isEmpty()) throw new Exception("Серия не найдена");
+            if(!s.get().getCreator().getId_creators().equals(user.get().getCreator().getId_creators())) throw new Exception("Серия создана не вами");
+            seriesDataService.removeById(s.get().getId_series());
             return map;
         } catch (Exception e) {
             map.put("status", "error");

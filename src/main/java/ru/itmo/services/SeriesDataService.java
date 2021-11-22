@@ -9,6 +9,7 @@ import ru.itmo.repository.CustomizedSeriesCrudRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Основной сервис взаимодействия с H2
@@ -34,6 +35,16 @@ public class SeriesDataService {
     @Transactional
     public void save(Series series) {
         customizedSeriesCrudRepository.save(series);
+    }
+
+    @Transactional
+    public void removeById(Long id) {
+        customizedSeriesCrudRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Optional<Series> getById(Long id) {
+        return customizedSeriesCrudRepository.findById(id);
     }
 
     @Transactional
