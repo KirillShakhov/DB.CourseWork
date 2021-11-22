@@ -12,6 +12,7 @@ import java.util.Date;
 //CREATE TABLE "series" (
 //        "id_series" bigserial ,
 //        "name" varchar(250) not null,
+//        "creator" bigint not null references creators(id_creators),
 //        "description" text,
 //        "date_of_start" date not null,
 //        "date_of_finish" date,
@@ -34,6 +35,11 @@ public class Series {
     @JsonView(View.Series.class)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "creator", nullable = false)
+    @JsonView(View.Series.class)
+    private Creator creator;
+
     @Lob
     @Column(name = "description")
     @JsonView(View.Series.class)
@@ -49,11 +55,19 @@ public class Series {
     @JsonView(View.Series.class)
     private Date date_of_finish;
 
+    public Series(Creator creator, String name, String description, Date date_of_start) {
+        this.creator = creator;
+        this.name = name;
+        this.description = description;
+        this.date_of_start = date_of_start;
+    }
+
     @Override
     public String toString() {
         return "Series{" +
                 "id_series=" + id_series +
                 ", name='" + name + '\'' +
+                ", creator='" + creator + '\'' +
                 ", description='" + description + '\'' +
                 ", date_of_start=" + date_of_start +
                 ", date_of_finish=" + date_of_finish +
