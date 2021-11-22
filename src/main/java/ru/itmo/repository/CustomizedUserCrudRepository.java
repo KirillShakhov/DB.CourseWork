@@ -11,7 +11,7 @@ import java.util.Optional;
  * Реализация CRUD для Token
  * */
 @Repository
-public interface CustomizedUserCrudRepository extends CrudRepository<User, String> {
+public interface CustomizedUserCrudRepository extends CrudRepository<User, Long> {
     @Query(value = "select * from users where username = :username", nativeQuery = true)
     Optional<User> findByLogin(@Param("username") String login);
 }

@@ -7,6 +7,7 @@ import ru.itmo.repository.CustomizedColorsCrudRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Основной сервис взаимодействия с H2
@@ -28,8 +29,15 @@ public class ColorsDataService {
     }
 
     @Transactional
+    public Optional<Color> getById(Long id) {
+        return customizedColorsCrudRepository.findById(id);
+    }
+
+    @Transactional
     public void save(Color color) {
         customizedColorsCrudRepository.save(color);
     }
+
+
 }
 

@@ -21,7 +21,7 @@ public class ColorsController {
 
     @JsonView(View.Color.class)
     @GetMapping("/api/v1/colors")
-    public Map<String, Object> registration() {
+    public Map<String, Object> getColors() {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {

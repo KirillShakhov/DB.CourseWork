@@ -42,17 +42,14 @@ public class Creator {
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.Creator.class)
     private List<Wheels> wheels;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.Creator.class)
     private List<Bumper> bumpers;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.Creator.class)
     private List<Car> cars ;
 
     public Creator(User user) {

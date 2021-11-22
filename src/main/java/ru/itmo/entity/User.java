@@ -34,12 +34,11 @@ public class User {
     private Long id_user;
 
     @Column(name = "username", unique = true, nullable = false, length = 250)
-    @JsonView(View.User.class)
+    @JsonView({View.User.class, View.Creator.class })
     private String username;
 
     @Lob
     @Column(name = "biography")
-    @JsonView(View.User.class)
     private String biography;
 
     @Column(name = "first_name", nullable = false, length = 250)
@@ -57,7 +56,6 @@ public class User {
 
 
     @Column(name = "pass", nullable = false, length = 250)
-    @JsonView(View.User.class)
     private String pass;
 
     @Column(name = "registration_date", nullable = false)
@@ -71,12 +69,10 @@ public class User {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.User.class)
     private List<Item> items;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JsonView(View.User.class)
     private List<Article> articles;
 
     public User(String login, String pass) {

@@ -8,6 +8,6 @@ import ru.itmo.entity.Color;
  * Реализация CRUD для Token
  * */
 @Repository
-public interface CustomizedColorsCrudRepository extends CrudRepository<Color, String> {
+public interface CustomizedColorsCrudRepository extends CrudRepository<Color, Long> {
 
 }

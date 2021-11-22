@@ -52,6 +52,14 @@ public class Wheels {
     @JsonView(View.Wheels.class)
     private String photo;
 
+    public Wheels(Creator user, String name, int cc, String photo, Color color) {
+        this.creator = user;
+        this.name = name;
+        this.adhesion_coefficient = cc;
+        this.disk_color = color;
+        this.photo = photo;
+    }
+
     @Override
     public String toString() {
         return "Wheels{" +
