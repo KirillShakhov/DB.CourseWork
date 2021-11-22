@@ -47,30 +47,36 @@ public class Car {
     @JsonView(View.Car.class)
     private Series series;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "first_color", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "first_color")
     @JsonView(View.Car.class)
     private Color first_color;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "second_color", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "second_color")
     @JsonView(View.Car.class)
     private Color second_color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wheels")
     @JsonView(View.Car.class)
-    private Series wheels;
+    private Wheels wheels;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bumper")
     @JsonView(View.Car.class)
-    private Series bumper;
+    private Bumper bumper;
 
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonView(View.Comment.class)
     private List<Comment> replies;
+
+    public Car(Creator creator, String name, Series series) {
+        this.creator = creator;
+        this.name = name;
+        this.series = series;
+    }
 
     @Override
     public String toString() {

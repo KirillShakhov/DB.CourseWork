@@ -7,6 +7,7 @@ import ru.itmo.repository.CustomizedWheelsCrudRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Основной сервис взаимодействия с H2
@@ -30,6 +31,11 @@ public class WheelsDataService {
     @Transactional
     public void save(Wheels color) {
         customizedWheelsCrudRepository.save(color);
+    }
+
+    @Transactional
+    public Optional<Wheels> getById(Long wheels) {
+        return customizedWheelsCrudRepository.findById(wheels);
     }
 }
 

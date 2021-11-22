@@ -7,6 +7,7 @@ import ru.itmo.repository.CustomizedBumpersCrudRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Основной сервис взаимодействия с H2
@@ -30,6 +31,11 @@ public class BumpersDataService {
     @Transactional
     public void save(Bumper color) {
         customizedBumpersCrudRepository.save(color);
+    }
+
+    @Transactional
+    public Optional<Bumper> getById(Long bumpers) {
+        return customizedBumpersCrudRepository.findById(bumpers);
     }
 }
 
