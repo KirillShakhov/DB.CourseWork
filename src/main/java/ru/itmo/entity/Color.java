@@ -38,15 +38,15 @@ public class Color {
     @JsonView(View.Color.class)
     private String hex;
 
-    @Column(name = "r", nullable = false, unique = true)
+    @Column(name = "r", nullable = false)
     @JsonView(View.Color.class)
     private int r;
 
-    @Column(name = "g", nullable = false, unique = true)
+    @Column(name = "g", nullable = false)
     @JsonView(View.Color.class)
     private int g;
 
-    @Column(name = "b", nullable = false, unique = true)
+    @Column(name = "b", nullable = false)
     @JsonView(View.Color.class)
     private int b;
 

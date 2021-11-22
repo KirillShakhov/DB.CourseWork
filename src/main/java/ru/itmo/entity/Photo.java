@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "colors", schema = "public")
+@Table(name = "photos", schema = "public")
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
