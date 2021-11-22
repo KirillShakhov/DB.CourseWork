@@ -34,11 +34,12 @@ public class CarsController {
 
     @JsonView(View.Series.class)
     @GetMapping("/api/v1/cars/groups")
-    public Map<String, Object> getCarsGroup() {
+    public Map<String, Object> getCarsGroup(@RequestParam(value = "id", required = false) Long id) {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            map.put("list", seriesDataService.findAll());
+            if(id == null) map.put("list", seriesDataService.findAll());
+            else map.put("list", seriesDataService.getById(id));
             return map;
         } catch (Exception e) {
             map.put("status", "error");

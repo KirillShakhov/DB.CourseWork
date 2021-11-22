@@ -1,9 +1,7 @@
 package ru.itmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,8 +16,7 @@ import java.util.List;
 //        PRIMARY KEY ("id_creators")
 //        );
 
-@Getter
-@Setter
+
 @RequiredArgsConstructor
 @Entity
 @Table(name = "creators", schema = "public")
@@ -30,7 +27,7 @@ public class Creator {
     @JsonView(View.Creator.class)
     private Long id_creators;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     @JsonView(View.Creator.class)
     private User creator;
@@ -56,6 +53,7 @@ public class Creator {
         this.creator = user;
         this.creation_date = java.util.Calendar.getInstance().getTime();
     }
+
 
     @Override
     public String toString() {
