@@ -47,6 +47,13 @@ public class Bumper {
     @JsonView(View.Bumpers.class)
     private String photo;
 
+    public Bumper(Creator user, String name, String photo, Color color) {
+        this.creator = user;
+        this.name = name;
+        this.color = color;
+        this.photo = photo;
+    }
+
     @Override
     public String toString() {
         return "Bumpers{" +

@@ -11,8 +11,8 @@ public class View {
     public interface Creator { }
     public interface Color { }
     public interface Series { }
-    public interface Wheels { }
-    public interface Bumpers { }
+    public interface Wheels extends Color{ }
+    public interface Bumpers extends Color{ }
     public interface Car { }
     public interface Photo { }
     public interface Item { }
