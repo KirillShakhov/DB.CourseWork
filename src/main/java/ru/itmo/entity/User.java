@@ -69,6 +69,10 @@ public class User {
     @JsonView(View.User.class)
     private Creator creator;
 
+    @Column(name = "balance", nullable = false)
+    @JsonView(View.User.class)
+    private int balance = 1000;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<Item> items;
