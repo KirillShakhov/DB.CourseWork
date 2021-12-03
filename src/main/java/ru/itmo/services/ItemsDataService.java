@@ -3,6 +3,7 @@ package ru.itmo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.itmo.entity.Item;
+import ru.itmo.entity.User;
 import ru.itmo.repository.CustomizedItemsCrudRepository;
 
 import javax.transaction.Transactional;
@@ -36,6 +37,10 @@ public class ItemsDataService {
     @Transactional
     public Optional<Item> getById(Long item) {
         return customizedItemsCrudRepository.findById(item);
+    }
+
+    public List<Item> findAllByUser(User user) {
+        return customizedItemsCrudRepository.findByUser(user.getId_user());
     }
 }
 

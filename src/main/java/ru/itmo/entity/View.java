@@ -15,7 +15,7 @@ public class View {
     public interface Bumpers extends Color{ }
     public interface Car { }
     public interface Photo { }
-    public interface Item { }
+    public interface Item extends Car, Bumpers, Wheels { }
     public interface PurchaseItems { }
     public interface Contract { }
     public interface Auction { }

@@ -1,5 +1,6 @@
 package ru.itmo.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,21 +31,32 @@ public class ItemsController {
         this.itemsDataService = itemsDataService;
     }
 
-//    @JsonView(View.Series.class)
-//    @GetMapping("/api/v1/cars/groups")
-//    public Map<String, Object> getCarsGroup(@RequestParam(value = "id", required = false) Long id) {
-//        Map<String, Object> map = new ManagedMap<>();
-//        map.put("status", "ok");
-//        try {
-//            if(id == null) map.put("list", seriesCarsDataService.findAll());
-//            else map.put("list", seriesCarsDataService.getById(id));
-//            return map;
-//        } catch (Exception e) {
-//            map.put("status", "error");
-//            map.put("message", e.getMessage());
-//            return map;
-//        }
-//    }
+    @JsonView(View.Item.class)
+    @GetMapping("/api/v1/items")
+    public Map<String, Object> getItems( @RequestParam("login") String login,
+                                         @RequestParam("pass") String pass,
+                                         @RequestParam(value = "id", required = false) Long id) {
+        Map<String, Object> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            if(id == null) map.put("list", itemsDataService.findAllByUser(user.get()));
+            else {
+                Optional<Item> item = itemsDataService.getById(id);
+                if(item.isEmpty()) throw new Exception("Предмета не существует");
+                if(!item.get().getOwner().getId_user().equals(user.get().getId_user())) throw new Exception("Предмет вам не пренадлежит");
+                map.put("list", itemsDataService.getById(id));
+            }
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
 
     @GetMapping("/api/v1/items/create")
     public Map<String, String> createItem( @RequestParam("login") String login,
@@ -59,7 +71,6 @@ public class ItemsController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
 
             Item item = new Item(user.get(), description, real_photo);
             if(id_car != null){
@@ -90,93 +101,28 @@ public class ItemsController {
             return map;
         }
     }
-//
-//    @GetMapping("/api/v1/cars/groups/remove")
-//    public Map<String, String> removeCarsGroup( @RequestParam("login") String login,
-//                                              @RequestParam("pass") String pass,
-//                                              @RequestParam("id") Long id
-//    ) {
-//        Map<String, String> map = new ManagedMap<>();
-//        map.put("status", "ok");
-//        try {
-//            Optional<User> user = userDataService.getByLogin(login);
-//            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
-//            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-//            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
-//
-//            Optional<Series> s = seriesCarsDataService.getById(id);
-//            if(s.isEmpty()) throw new Exception("Серия не найдена");
-//            if(!s.get().getCreator().getId_creators().equals(user.get().getCreator().getId_creators())) throw new Exception("Серия создана не вами");
-//            seriesCarsDataService.removeById(s.get().getId_series());
-//            return map;
-//        } catch (Exception e) {
-//            map.put("status", "error");
-//            map.put("message", e.getMessage());
-//            return map;
-//        }
-//    }
-//
-//    @GetMapping("/api/v1/cars/create")
-//    public Map<String, String> createCar( @RequestParam("login") String login,
-//                                                @RequestParam("pass") String pass,
-//                                                @RequestParam("name") String name,
-//                                                @RequestParam("series") Long series,
-//                                                @RequestParam(value = "bumpers", required=false) Long bumpers,
-//                                                @RequestParam(value = "wheels", required=false) Long wheels,
-//                                                @RequestParam(value = "first_color", required=false) Long first_color,
-//                                                @RequestParam(value = "second_color", required=false) Long second_color
-//    ) {
-//        Map<String, String> map = new ManagedMap<>();
-//        map.put("status", "ok");
-//        try {
-//            Optional<User> user = userDataService.getByLogin(login);
-//            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
-//            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-//            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
-//
-//            Optional<Series> s = seriesCarsDataService.getById(series);
-//            if(s.isEmpty()) throw new Exception("Серия не найдена");
-//
-//            Car car = new Car(user.get().getCreator(), name, s.get());
-//
-//            if(bumpers != null && !bumpers.equals("")) {
-//                Optional<Bumper> b = bumpersDataService.getById(bumpers);
-//                if (b.isEmpty()) throw new Exception("Бампер не найден");
-//                car.setBumper(b.get());
-//            }
-//
-//            if(wheels != null && !wheels.equals("")) {
-//                Optional<Wheels> w = wheelsDataService.getById(wheels);
-//                if (w.isEmpty()) throw new Exception("Колеса не найден");
-//                car.setWheels(w.get());
-//            }
-//
-//
-//            if(first_color != null && !first_color.equals("")) {
-//                Optional<Color> c1 = colorsDataService.getById(first_color);
-//                if (c1.isEmpty()) throw new Exception("Первый цвет не найден");
-//                car.setFirst_color(c1.get());
-//            }
-//
-//
-//            if(second_color != null && !second_color.equals("")) {
-//                Optional<Color> c2 = colorsDataService.getById(second_color);
-//                if (c2.isEmpty()) throw new Exception("Второй цвет не найден");
-//                car.setSecond_color(c2.get());
-//            }
-//
-//            seriesCarsDataService.saveCar(car);
-//            return map;
-//        } catch (Exception e) {
-//            map.put("status", "error");
-//            map.put("message", e.getMessage());
-//            return map;
-//        }
-//    }
-//
-//    public Date convertToDateViaInstant(LocalDate dateToConvert) {
-//        return Date.from(dateToConvert.atStartOfDay()
-//                .atZone(ZoneId.systemDefault())
-//                .toInstant());
-//    }
+
+    @GetMapping("/api/v1/items/remove")
+    public Map<String, String> removeItem( @RequestParam("login") String login,
+                                              @RequestParam("pass") String pass,
+                                              @RequestParam("id") Long id
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Item> item = itemsDataService.getById(id);
+            if(item.isEmpty()) throw new Exception("Предмет не найден");
+            if(!item.get().getOwner().getId_user().equals(user.get().getId_user())) throw new Exception("Предмет вам не пренадлежит");
+            seriesCarsDataService.removeById(item.get().getId_item());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
 }

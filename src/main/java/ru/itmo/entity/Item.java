@@ -47,9 +47,10 @@ public class Item {
 
     @Lob
     @Column(name = "description")
+    @JsonView(View.Item.class)
     private String description;
 
-    @Column(name = "real_photo", length = 250)
+    @Column(name = "real_photo")
     @JsonView(View.Item.class)
     private String real_photo;
 
