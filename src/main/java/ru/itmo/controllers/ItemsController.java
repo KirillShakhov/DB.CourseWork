@@ -117,7 +117,7 @@ public class ItemsController {
             Optional<Item> item = itemsDataService.getById(id);
             if(item.isEmpty()) throw new Exception("Предмет не найден");
             if(!item.get().getOwner().getId_user().equals(user.get().getId_user())) throw new Exception("Предмет вам не пренадлежит");
-            seriesCarsDataService.removeById(item.get().getId_item());
+            itemsDataService.removeById(item.get().getId_item());
             return map;
         } catch (Exception e) {
             map.put("status", "error");

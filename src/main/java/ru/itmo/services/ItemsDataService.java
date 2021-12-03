@@ -35,6 +35,11 @@ public class ItemsDataService {
     }
 
     @Transactional
+    public void removeById(Long id) {
+        customizedItemsCrudRepository.deleteById(id);
+    }
+
+    @Transactional
     public Optional<Item> getById(Long item) {
         return customizedItemsCrudRepository.findById(item);
     }
