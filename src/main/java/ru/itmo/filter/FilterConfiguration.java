@@ -2,14 +2,14 @@ package ru.itmo.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import ru.itmo.services.TokenDataService;
+import ru.itmo.services.UserDataService;
 
 @Configuration
 public class FilterConfiguration {
-    private final TokenDataService tokenDataService;
+    private final UserDataService userDataService;
     @Autowired
-    public FilterConfiguration(TokenDataService tokenDataService) {
-        this.tokenDataService = tokenDataService;
+    public FilterConfiguration(UserDataService userDataService) {
+        this.userDataService = userDataService;
     }
 //    @Bean
 //    public FilterRegistrationBean<TokenFilter> loggingFilter(){
