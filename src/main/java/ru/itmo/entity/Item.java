@@ -61,6 +61,12 @@ public class Item {
     @OneToOne(mappedBy = "item")
     private PurchaseItems purchase_items;
 
+    public Item(User user, String description, String real_photo) {
+        this.owner = user;
+        this.description = description;
+        this.real_photo = real_photo;
+    }
+
     @Override
     public String toString() {
         return "Item{" +

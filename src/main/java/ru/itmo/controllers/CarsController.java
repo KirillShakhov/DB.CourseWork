@@ -17,15 +17,15 @@ import java.util.Optional;
 
 @RestController
 public class CarsController {
-    private final SeriesDataService seriesDataService;
+    private final SeriesCarsDataService seriesCarsDataService;
     private final UserDataService userDataService;
     private final BumpersDataService bumpersDataService;
     private final WheelsDataService wheelsDataService;
     private final ColorsDataService colorsDataService;
 
     @Autowired
-    public CarsController(SeriesDataService seriesDataService, UserDataService userDataService, BumpersDataService bumpersDataService, WheelsDataService wheelsDataService, ColorsDataService colorsDataService) {
-        this.seriesDataService = seriesDataService;
+    public CarsController(SeriesCarsDataService seriesCarsDataService, UserDataService userDataService, BumpersDataService bumpersDataService, WheelsDataService wheelsDataService, ColorsDataService colorsDataService) {
+        this.seriesCarsDataService = seriesCarsDataService;
         this.userDataService = userDataService;
         this.bumpersDataService = bumpersDataService;
         this.wheelsDataService = wheelsDataService;
@@ -38,8 +38,8 @@ public class CarsController {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            if(id == null) map.put("list", seriesDataService.findAll());
-            else map.put("list", seriesDataService.getById(id));
+            if(id == null) map.put("list", seriesCarsDataService.findAll());
+            else map.put("list", seriesCarsDataService.getById(id));
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -66,7 +66,7 @@ public class CarsController {
             LocalDate date = LocalDate.parse(date_of_start);//"2018-05-05"
             Series series = new Series(user.get().getCreator(), name, description, convertToDateViaInstant(date));
             if(date_of_finish != null && date_of_finish.equals("")) series.setDate_of_finish(convertToDateViaInstant(LocalDate.parse(date_of_finish)));
-            seriesDataService.save(series);
+            seriesCarsDataService.save(series);
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -88,10 +88,10 @@ public class CarsController {
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
             if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
 
-            Optional<Series> s = seriesDataService.getById(id);
+            Optional<Series> s = seriesCarsDataService.getById(id);
             if(s.isEmpty()) throw new Exception("Серия не найдена");
             if(!s.get().getCreator().getId_creators().equals(user.get().getCreator().getId_creators())) throw new Exception("Серия создана не вами");
-            seriesDataService.removeById(s.get().getId_series());
+            seriesCarsDataService.removeById(s.get().getId_series());
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -118,7 +118,7 @@ public class CarsController {
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
             if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
 
-            Optional<Series> s = seriesDataService.getById(series);
+            Optional<Series> s = seriesCarsDataService.getById(series);
             if(s.isEmpty()) throw new Exception("Серия не найдена");
 
             Car car = new Car(user.get().getCreator(), name, s.get());
@@ -149,7 +149,7 @@ public class CarsController {
                 car.setSecond_color(c2.get());
             }
 
-            seriesDataService.saveCar(car);
+            seriesCarsDataService.saveCar(car);
             return map;
         } catch (Exception e) {
             map.put("status", "error");

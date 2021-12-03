@@ -41,6 +41,7 @@ public class User {
 
     @Lob
     @Column(name = "biography")
+    @JsonView(View.User.class)
     private String biography;
 
     @Column(name = "first_name", nullable = false, length = 250)

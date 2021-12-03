@@ -17,12 +17,12 @@ import java.util.Optional;
  */
 
 @Service
-public class SeriesDataService {
+public class SeriesCarsDataService {
     private final CustomizedSeriesCrudRepository customizedSeriesCrudRepository;
     private final CustomizedCarsCrudRepository customizedCarsCrudRepository;
 
     @Autowired
-    public SeriesDataService(CustomizedSeriesCrudRepository customizedSeriesCrudRepository, CustomizedCarsCrudRepository customizedCarsCrudRepository) {
+    public SeriesCarsDataService(CustomizedSeriesCrudRepository customizedSeriesCrudRepository, CustomizedCarsCrudRepository customizedCarsCrudRepository) {
         this.customizedSeriesCrudRepository = customizedSeriesCrudRepository;
         this.customizedCarsCrudRepository = customizedCarsCrudRepository;
     }
@@ -51,5 +51,11 @@ public class SeriesDataService {
     public void saveCar(Car car) {
         customizedCarsCrudRepository.save(car);
     }
+
+    @Transactional
+    public Optional<Car> getCarById(Long id) {
+        return customizedCarsCrudRepository.findById(id);
+    }
+
 }
 

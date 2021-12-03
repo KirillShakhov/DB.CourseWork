@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Основной сервис взаимодействия с H2
- * для WebResource
+ * Основной сервис взаимодействия с БД
+ * для Colors
  */
 
 @Service
