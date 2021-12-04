@@ -35,6 +35,11 @@ public class PurchaseItems {
     @JsonView(View.PurchaseItems.class)
     private Item item;
 
+    public PurchaseItems(Item item, Integer price) {
+        this.item = item;
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "PurchaseItems{" +

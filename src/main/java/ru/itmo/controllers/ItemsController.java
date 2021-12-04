@@ -19,15 +19,13 @@ public class ItemsController {
     private final UserDataService userDataService;
     private final BumpersDataService bumpersDataService;
     private final WheelsDataService wheelsDataService;
-    private final ColorsDataService colorsDataService;
 
     @Autowired
-    public ItemsController(SeriesCarsDataService seriesCarsDataService, UserDataService userDataService, BumpersDataService bumpersDataService, WheelsDataService wheelsDataService, ColorsDataService colorsDataService, ItemsDataService itemsDataService) {
+    public ItemsController(SeriesCarsDataService seriesCarsDataService, UserDataService userDataService, BumpersDataService bumpersDataService, WheelsDataService wheelsDataService, ItemsDataService itemsDataService) {
         this.seriesCarsDataService = seriesCarsDataService;
         this.userDataService = userDataService;
         this.bumpersDataService = bumpersDataService;
         this.wheelsDataService = wheelsDataService;
-        this.colorsDataService = colorsDataService;
         this.itemsDataService = itemsDataService;
     }
 
