@@ -30,7 +30,7 @@ public class PurchaseItems {
     @JsonView(View.PurchaseItems.class)
     private int price;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false)
     @JoinColumn(name = "item")
     @JsonView(View.PurchaseItems.class)
     private Item item;

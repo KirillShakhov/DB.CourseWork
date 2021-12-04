@@ -66,6 +66,8 @@ public class TradeController {
             if (item.isEmpty()) throw new Exception("Предмет не найден");
             if (!item.get().getOwner().getId_user().equals(user.get().getId_user()))
                 throw new Exception("Предмет вам не пренадлежит");
+            if (item.get().getPurchase_items() != null) throw new Exception("Предмет уже на продаже");
+
             PurchaseItems purchaseItems = new PurchaseItems(item.get(), price);
             tradeDataService.save(purchaseItems);
             return map;
@@ -94,6 +96,28 @@ public class TradeController {
                 throw new Exception("Предмет вам не пренадлежит");
             if (item.get().getPurchase_items() == null) throw new Exception("Предмет не выставлен на продажу");
             tradeDataService.removeById(item.get().getPurchase_items().getId());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
+
+    @GetMapping("/api/v1/trade/confirm")
+    public Map<String, String> confirmTrade(@RequestParam("login") String login,
+                                           @RequestParam("pass") String pass,
+                                           @RequestParam("id") Long id) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+            Optional<PurchaseItems> item = tradeDataService.getById(id);
+            if (item.isEmpty()) throw new Exception("Предмет не найден");
+            if (item.get().getPrice() > user.get().getBalance()) throw new Exception("Недостаточно денег");
+            tradeDataService.buy(user.get(), item.get());
             return map;
         } catch (Exception e) {
             map.put("status", "error");
