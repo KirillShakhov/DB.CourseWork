@@ -104,7 +104,7 @@ public class TradeController {
         }
     }
 
-    @GetMapping("/api/v1/trade/confirm")
+    @GetMapping("/api/v1/trade/buy")
     public Map<String, String> confirmTrade(@RequestParam("login") String login,
                                            @RequestParam("pass") String pass,
                                            @RequestParam("id") Long id) {

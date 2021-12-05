@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,8 +71,21 @@ public class Contract {
     private Auction auction;
 
     @OneToMany
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 
+    public Contract(User from_user, User to_user, Integer from_money, Integer to_money) {
+        this.from_user = from_user;
+        this.to_user = to_user;
+        this.from_money = from_money;
+        this.to_money = to_money;
+    }
+
+    public Contract(User from_user, Integer from_money, Integer to_money) {
+        this.from_user = from_user;
+        this.from_money = from_money;
+        this.to_money = to_money;
+    }
+    
     @Override
     public String toString() {
         return "Contract{" +
@@ -84,5 +98,9 @@ public class Contract {
                 ", closing_date=" + closing_date +
                 ", closing_time=" + closing_time +
                 '}';
+    }
+
+    public void addItem(Item item) {
+        this.items.add(item);
     }
 }
