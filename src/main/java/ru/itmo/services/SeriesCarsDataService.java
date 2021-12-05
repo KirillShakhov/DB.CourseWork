@@ -57,5 +57,9 @@ public class SeriesCarsDataService {
         return customizedCarsCrudRepository.findById(id);
     }
 
+    @Transactional
+    public void removeCarById(Long id) {
+        customizedCarsCrudRepository.deleteById(id);
+    }
 }
 

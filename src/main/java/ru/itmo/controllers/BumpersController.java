@@ -67,4 +67,28 @@ public class BumpersController {
             return map;
         }
     }
+
+    @GetMapping("/api/v1/bumpers/remove")
+    public Map<String, String> removeBumpers( @RequestParam("login") String login,
+                                             @RequestParam("pass") String pass,
+                                             @RequestParam("id") Long id
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Bumper> bumper = bumpersDataService.getById(id);
+            if(bumper.isEmpty()) throw new Exception("Бампер не найден");
+            if(!bumper.get().getCreator().getUser().getId_user().equals(user.get().getId_user())) throw new Exception("Бампер создан не вами");
+            bumpersDataService.removeById(bumper.get().getId_bumper());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
 }

@@ -37,5 +37,10 @@ public class WheelsDataService {
     public Optional<Wheels> getById(Long wheels) {
         return customizedWheelsCrudRepository.findById(wheels);
     }
+
+    @Transactional
+    public void removeById(Long id) {
+        customizedWheelsCrudRepository.deleteById(id);
+    }
 }
 

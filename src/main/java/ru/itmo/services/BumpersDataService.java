@@ -37,5 +37,11 @@ public class BumpersDataService {
     public Optional<Bumper> getById(Long bumpers) {
         return customizedBumpersCrudRepository.findById(bumpers);
     }
+
+    @Transactional
+    public void removeById(Long id) {
+        customizedBumpersCrudRepository.deleteById(id);
+    }
+
 }
 

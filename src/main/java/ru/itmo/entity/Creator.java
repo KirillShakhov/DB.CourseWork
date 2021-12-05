@@ -31,9 +31,9 @@ public class Creator {
     private Long id_creators;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator")
+    @JoinColumn(name = "user")
     @JsonView(View.Creator.class)
-    private User creator;
+    private User user;
 
     @Column(name = "creation_date", nullable = false)
     @Temporal(TemporalType.DATE)
@@ -53,7 +53,7 @@ public class Creator {
     private List<Car> cars ;
 
     public Creator(User user) {
-        this.creator = user;
+        this.user = user;
         this.creation_date = java.util.Calendar.getInstance().getTime();
     }
 
@@ -62,7 +62,7 @@ public class Creator {
     public String toString() {
         return "Creator{" +
                 "id_creators=" + id_creators +
-                ", creator=" + creator +
+                ", creator=" + user +
                 ", creation_date=" + creation_date +
                 '}';
     }

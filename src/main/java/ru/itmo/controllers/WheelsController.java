@@ -6,10 +6,7 @@ import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.itmo.entity.Color;
-import ru.itmo.entity.User;
-import ru.itmo.entity.View;
-import ru.itmo.entity.Wheels;
+import ru.itmo.entity.*;
 import ru.itmo.services.ColorsDataService;
 import ru.itmo.services.UserDataService;
 import ru.itmo.services.WheelsDataService;
@@ -64,6 +61,30 @@ public class WheelsController {
             if(c.isEmpty()) throw new Exception("Такого цвета нет");
             Wheels wheels = new Wheels(user.get().getCreator(), name, cc, photo, c.get());
             wheelsDataService.save(wheels);
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
+
+    @GetMapping("/api/v1/wheels/remove")
+    public Map<String, String> removeWheels( @RequestParam("login") String login,
+                                              @RequestParam("pass") String pass,
+                                              @RequestParam("id") Long id
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Wheels> wheels = wheelsDataService.getById(id);
+            if(wheels.isEmpty()) throw new Exception("Колеса не найдены");
+            if(!wheels.get().getCreator().getUser().getId_user().equals(user.get().getId_user())) throw new Exception("Колеса созданы не вами");
+            wheelsDataService.removeById(wheels.get().getId_wheel());
             return map;
         } catch (Exception e) {
             map.put("status", "error");

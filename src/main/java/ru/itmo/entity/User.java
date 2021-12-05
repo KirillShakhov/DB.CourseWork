@@ -66,7 +66,7 @@ public class User {
     @JsonView(View.User.class)
     private Date registration_date;
 
-    @OneToOne(mappedBy = "creator")
+    @OneToOne(mappedBy = "user")
     @JsonView(View.User.class)
     private Creator creator;
 
