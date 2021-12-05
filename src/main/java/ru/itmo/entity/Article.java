@@ -59,6 +59,12 @@ public class Article {
     @JsonView(View.Comment.class)
     private List<Comment> replies;
 
+    public Article(String title, String text, User author) {
+        this.title = title;
+        this.text = text;
+        this.author = author;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
