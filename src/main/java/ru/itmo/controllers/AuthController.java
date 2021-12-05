@@ -62,14 +62,21 @@ public class AuthController {
     @JsonView(View.User.class)
     @GetMapping("/api/v1/info")
     public Map<String, Object> info(@RequestParam("login") String login,
-                                    @RequestParam("pass") String pass) {
+                                    @RequestParam("pass") String pass,
+                                    @RequestParam("id") Long user_id) {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             else if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            map.put("list", user.get());
+            if(user_id == null) {
+                map.put("list", user.get());
+            }else{
+                Optional<User> u = userDataService.getById(user_id);
+                if (u.isEmpty()) throw new Exception("Искомого аккаунта не существует");
+                map.put("list", u.get());
+            }
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -77,6 +84,7 @@ public class AuthController {
             return map;
         }
     }
+
     @JsonView(View.User.class)
     @GetMapping("/api/v1/info/edit")
     public Map<String, Object> infoedit(@RequestParam("login") String login,
@@ -100,7 +108,7 @@ public class AuthController {
             u.setFirst_name(first_name);
             u.setLast_name(last_name);
             u.setEmail(email);
-            if(creator && u.getCreator()==null) {
+            if(creator && u.getCreator_user()==null) {
                 userDataService.saveCreator(u);
             }
             userDataService.save(u);

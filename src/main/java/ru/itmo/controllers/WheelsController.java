@@ -56,10 +56,10 @@ public class WheelsController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+            if (user.get().getCreator_user() == null) throw new Exception("Вы не являетесь создателем");
             Optional<Color> c =  colorsDataService.getById(color);
             if(c.isEmpty()) throw new Exception("Такого цвета нет");
-            Wheels wheels = new Wheels(user.get().getCreator(), name, cc, photo, c.get());
+            Wheels wheels = new Wheels(user.get().getCreator_user(), name, cc, photo, c.get());
             wheelsDataService.save(wheels);
             return map;
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class WheelsController {
 
             Optional<Wheels> wheels = wheelsDataService.getById(id);
             if(wheels.isEmpty()) throw new Exception("Колеса не найдены");
-            if(!wheels.get().getCreator().getUser().getId_user().equals(user.get().getId_user())) throw new Exception("Колеса созданы не вами");
+            if(!wheels.get().getCreator().getCreator_user().getUsername().equals(user.get().getUsername())) throw new Exception("Колеса созданы не вами");
             wheelsDataService.removeById(wheels.get().getId_wheel());
             return map;
         } catch (Exception e) {

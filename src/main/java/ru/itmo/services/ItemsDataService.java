@@ -44,8 +44,9 @@ public class ItemsDataService {
         return customizedItemsCrudRepository.findById(item);
     }
 
+    @Transactional
     public List<Item> findAllByUser(User user) {
-        return customizedItemsCrudRepository.findByUser(user.getId_user());
+        return customizedItemsCrudRepository.findByUser(user.getUsername());
     }
 }
 

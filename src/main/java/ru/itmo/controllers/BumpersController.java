@@ -55,10 +55,10 @@ public class BumpersController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+            if (user.get().getCreator_user() == null) throw new Exception("Вы не являетесь создателем");
             Optional<Color> c =  colorsDataService.getById(color);
             if(c.isEmpty()) throw new Exception("Такого цвета нет");
-            Bumper bumper = new Bumper(user.get().getCreator(), name, photo, c.get());
+            Bumper bumper = new Bumper(user.get().getCreator_user(), name, photo, c.get());
             bumpersDataService.save(bumper);
             return map;
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class BumpersController {
 
             Optional<Bumper> bumper = bumpersDataService.getById(id);
             if(bumper.isEmpty()) throw new Exception("Бампер не найден");
-            if(!bumper.get().getCreator().getUser().getId_user().equals(user.get().getId_user())) throw new Exception("Бампер создан не вами");
+            if(!bumper.get().getCreator().getCreator_user().getUsername().equals(user.get().getUsername())) throw new Exception("Бампер создан не вами");
             bumpersDataService.removeById(bumper.get().getId_bumper());
             return map;
         } catch (Exception e) {

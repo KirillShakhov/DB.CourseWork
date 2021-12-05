@@ -16,5 +16,5 @@ import java.util.List;
 public interface CustomizedItemsCrudRepository extends CrudRepository<Item, Long> {
     @Transactional
     @Query(value = "select * from items where owner = :username", nativeQuery = true)
-    List<Item> findByUser(@Param("username") Long login);
+    List<Item> findByUser(@Param("username") String login);
 }

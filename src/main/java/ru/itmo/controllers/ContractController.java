@@ -103,7 +103,7 @@ public class ContractController {
 
             Optional<Contract> contract = contractDataService.getById(id);
             if (contract.isEmpty()) throw new Exception("Контракт не найден");
-            if (!contract.get().getFrom_user().getId_user().equals(user.get().getId_user()))
+            if (!contract.get().getFrom_user().getUsername().equals(user.get().getUsername()))
                 throw new Exception("Контракт вам не пренадлежит");
             contractDataService.removeById(contract.get().getId_contract());
             return map;

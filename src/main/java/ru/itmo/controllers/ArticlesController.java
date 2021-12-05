@@ -84,7 +84,7 @@ public class ArticlesController {
 
             Optional<Article> article = articlesDataService.getById(id);
             if(article.isEmpty()) throw new Exception("Статья не найден");
-            if(!article.get().getAuthor().getId_user().equals(user.get().getId_user())) throw new Exception("Статья написана не вами");
+            if(!article.get().getAuthor().getUsername().equals(user.get().getUsername())) throw new Exception("Статья написана не вами");
             articlesDataService.removeById(article.get().getId_articles());
             return map;
         } catch (Exception e) {

@@ -62,9 +62,9 @@ public class CarsController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+            if (user.get().getCreator_user() == null) throw new Exception("Вы не являетесь создателем");
             LocalDate date = LocalDate.parse(date_of_start);//"2018-05-05"
-            Series series = new Series(user.get().getCreator(), name, description, convertToDateViaInstant(date));
+            Series series = new Series(user.get().getCreator_user(), name, description, convertToDateViaInstant(date));
             if(date_of_finish != null && date_of_finish.equals("")) series.setDate_of_finish(convertToDateViaInstant(LocalDate.parse(date_of_finish)));
             seriesCarsDataService.save(series);
             return map;
@@ -86,11 +86,11 @@ public class CarsController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+            if (user.get().getCreator_user() == null) throw new Exception("Вы не являетесь создателем");
 
             Optional<Series> s = seriesCarsDataService.getById(id);
             if(s.isEmpty()) throw new Exception("Серия не найдена");
-            if(!s.get().getCreator().getId_creators().equals(user.get().getCreator().getId_creators())) throw new Exception("Серия создана не вами");
+            if(!s.get().getCreator().getId_creators().equals(user.get().getCreator_user().getId_creators())) throw new Exception("Серия создана не вами");
             seriesCarsDataService.removeById(s.get().getId_series());
             return map;
         } catch (Exception e) {
@@ -116,12 +116,12 @@ public class CarsController {
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-            if (user.get().getCreator() == null) throw new Exception("Вы не являетесь создателем");
+            if (user.get().getCreator_user() == null) throw new Exception("Вы не являетесь создателем");
 
             Optional<Series> s = seriesCarsDataService.getById(series);
             if(s.isEmpty()) throw new Exception("Серия не найдена");
 
-            Car car = new Car(user.get().getCreator(), name, s.get());
+            Car car = new Car(user.get().getCreator_user(), name, s.get());
 
             if(bumpers != null && !bumpers.equals("")) {
                 Optional<Bumper> b = bumpersDataService.getById(bumpers);
@@ -172,7 +172,7 @@ public class CarsController {
 
             Optional<Car> car = seriesCarsDataService.getCarById(id);
             if(car.isEmpty()) throw new Exception("Машинка не найдена");
-            if(!car.get().getCreator().getUser().getId_user().equals(user.get().getId_user())) throw new Exception("Машнка создана не вами");
+            if(!car.get().getCreator().getCreator_user().getUsername().equals(user.get().getUsername())) throw new Exception("Машнка создана не вами");
             seriesCarsDataService.removeCarById(car.get().getId_car());
             return map;
         } catch (Exception e) {

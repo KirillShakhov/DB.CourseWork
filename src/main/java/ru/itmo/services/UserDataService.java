@@ -38,6 +38,12 @@ public class UserDataService {
     }
 
     @Transactional
+    public Optional<User> getById(Long id) {
+        return customizedUserCrudRepository.findById(id);
+    }
+
+
+    @Transactional
     public void saveCreator(User user) {
         customizedCreatorCrudRepository.save(new Creator(user));
     }
@@ -46,7 +52,5 @@ public class UserDataService {
     public Optional<User> getByLogin(String username) {
         return customizedUserCrudRepository.findByLogin(username);
     }
-
-
 }
 

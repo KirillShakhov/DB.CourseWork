@@ -64,7 +64,7 @@ public class TradeController {
 
             Optional<Item> item = itemsDataService.getById(id);
             if (item.isEmpty()) throw new Exception("Предмет не найден");
-            if (!item.get().getOwner().getId_user().equals(user.get().getId_user()))
+            if (!item.get().getOwner().getUsername().equals(user.get().getUsername()))
                 throw new Exception("Предмет вам не пренадлежит");
             if (item.get().getPurchase_items() != null) throw new Exception("Предмет уже на продаже");
 
@@ -92,7 +92,7 @@ public class TradeController {
 
             Optional<Item> item = itemsDataService.getById(id);
             if (item.isEmpty()) throw new Exception("Предмет не найден");
-            if (!item.get().getOwner().getId_user().equals(user.get().getId_user()))
+            if (!item.get().getOwner().getUsername().equals(user.get().getUsername()))
                 throw new Exception("Предмет вам не пренадлежит");
             if (item.get().getPurchase_items() == null) throw new Exception("Предмет не выставлен на продажу");
             tradeDataService.removeById(item.get().getPurchase_items().getId());

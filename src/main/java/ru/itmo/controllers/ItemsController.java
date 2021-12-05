@@ -45,7 +45,7 @@ public class ItemsController {
             else {
                 Optional<Item> item = itemsDataService.getById(id);
                 if(item.isEmpty()) throw new Exception("Предмета не существует");
-                if(!item.get().getOwner().getId_user().equals(user.get().getId_user())) throw new Exception("Предмет вам не пренадлежит");
+                if(!item.get().getOwner().getUsername().equals(user.get().getUsername())) throw new Exception("Предмет вам не пренадлежит");
                 map.put("list", itemsDataService.getById(id));
             }
             return map;
@@ -114,7 +114,7 @@ public class ItemsController {
 
             Optional<Item> item = itemsDataService.getById(id);
             if(item.isEmpty()) throw new Exception("Предмет не найден");
-            if(!item.get().getOwner().getId_user().equals(user.get().getId_user())) throw new Exception("Предмет вам не пренадлежит");
+            if(!item.get().getOwner().getUsername().equals(user.get().getUsername())) throw new Exception("Предмет вам не пренадлежит");
             itemsDataService.removeById(item.get().getId_item());
             return map;
         } catch (Exception e) {
