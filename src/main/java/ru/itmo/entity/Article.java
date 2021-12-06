@@ -35,8 +35,8 @@ public class Article {
     @JsonView(View.Article.class)
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "car", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "car", nullable = true)
     private Car car;
 
     @Lob
