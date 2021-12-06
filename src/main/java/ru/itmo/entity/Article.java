@@ -35,13 +35,13 @@ public class Article {
     @JsonView(View.Article.class)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "car", nullable = false)
-    @JsonView(View.Article.class)
     private Car car;
 
     @Lob
     @Column(name = "text", nullable = false)
+    @JsonView(View.Article.class)
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -63,6 +63,7 @@ public class Article {
         this.title = title;
         this.text = text;
         this.author = author;
+        this.create_date = java.util.Calendar.getInstance().getTime();
     }
 
     @Override

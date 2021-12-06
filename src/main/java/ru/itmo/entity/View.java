@@ -13,6 +13,6 @@ public class View {
     public interface PurchaseItems extends Item { }
     public interface Contract extends Item { }
     public interface Auction extends Contract { }
-    public interface Article { }
+    public interface Article extends Car { }
     public interface Comment { }
 }

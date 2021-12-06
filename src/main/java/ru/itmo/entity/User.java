@@ -29,7 +29,7 @@ public class User {
 
     @Id
     @Column(name = "username", unique = true, nullable = false)
-    @JsonView({View.User.class, View.Creator.class})
+    @JsonView({View.User.class, View.Creator.class, View.Article.class})
     private String username;
 
     @Lob
@@ -71,9 +71,9 @@ public class User {
             cascade = CascadeType.ALL)
     private List<Item> items;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Article> articles;
+//    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+//    private List<Article> articles;
 
     public User(String login, String pass) {
         this.username = login;
