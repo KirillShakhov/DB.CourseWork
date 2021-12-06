@@ -38,7 +38,7 @@ public class UserDataService {
     }
 
     @Transactional
-    public Optional<User> getById(Long id) {
+    public Optional<User> getById(String id) {
         return customizedUserCrudRepository.findById(id);
     }
 

@@ -14,6 +14,9 @@ import ru.itmo.services.ContractDataService;
 import ru.itmo.services.ItemsDataService;
 import ru.itmo.services.UserDataService;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +35,7 @@ public class ContractController {
     }
 
     @JsonView(View.Contract.class)
-    @GetMapping("/api/v1/contract/get")
+    @GetMapping("/api/v1/contract")
     public Map<String, Object> getContract(@RequestParam(value = "for_me", required = false) Boolean forMe) {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
@@ -56,7 +59,9 @@ public class ContractController {
                                               @RequestParam(value = "to_user", required = false) String to_user,
                                               @RequestParam("from_money") Integer from_money,
                                               @RequestParam("to_money") Integer to_money,
-                                              @RequestParam("items") List<Long> items
+                                              @RequestParam("closing_date") String closing_date,
+                                              @RequestParam(value = "closing_time", required = false) String closing_time,
+                                              @RequestParam("items[]") List<Long> items
     ) {
         Map<String, String> map = new ManagedMap<>();
         map.put("status", "ok");
@@ -79,7 +84,9 @@ public class ContractController {
                 if (item.isEmpty()) throw new Exception("Один из предметов не найден");
                 contract.addItem(item.get());
             }
-
+            LocalDate date = LocalDate.parse(closing_date);//"2018-05-05"
+            Date d = convertToDateViaInstant(date);
+            contract.setClosing_date(d);
             contractDataService.save(contract);
             return map;
         } catch (Exception e) {
@@ -112,6 +119,12 @@ public class ContractController {
             map.put("message", e.getMessage());
             return map;
         }
+    }
+
+    public Date convertToDateViaInstant(LocalDate dateToConvert) {
+        return java.util.Date.from(dateToConvert.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
     }
 
 //    @GetMapping("/api/v1/contract/buy")
