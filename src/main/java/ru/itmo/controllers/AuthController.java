@@ -63,7 +63,7 @@ public class AuthController {
     @GetMapping("/api/v1/info")
     public Map<String, Object> info(@RequestParam("login") String login,
                                     @RequestParam("pass") String pass,
-                                    @RequestParam("id") String user_id) {
+                                    @RequestParam(value = "id", required = false) String user_id) {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {

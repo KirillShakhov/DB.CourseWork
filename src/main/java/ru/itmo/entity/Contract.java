@@ -1,9 +1,6 @@
 package ru.itmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -23,9 +20,7 @@ import java.util.List;
 //        PRIMARY KEY ("id_contract")
 //        );
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+
 @Entity
 @Table(name = "contracts", schema = "public")
 public class Contract {
@@ -66,12 +61,16 @@ public class Contract {
     @JsonView(View.Contract.class)
     private Time closing_time = new Time(0);
 
-    @OneToOne(mappedBy = "last_customer")
-    @JsonView(View.Contract.class)
-    private Auction auction;
+//    @OneToOne(mappedBy = "last_customer", optional = true)
+//    private Auction auction;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
+    @JsonView(View.Contract.class)
     private List<Item> items = new ArrayList<>();
+
+    public Contract(){
+
+    }
 
     public Contract(User from_user, User to_user, Integer from_money, Integer to_money) {
         this.from_user = from_user;
@@ -85,7 +84,87 @@ public class Contract {
         this.from_money = from_money;
         this.to_money = to_money;
     }
-    
+
+    public Long getId_contract() {
+        return id_contract;
+    }
+
+    public void setId_contract(Long id_contract) {
+        this.id_contract = id_contract;
+    }
+
+    public User getFrom_user() {
+        return from_user;
+    }
+
+    public void setFrom_user(User from_user) {
+        this.from_user = from_user;
+    }
+
+    public User getTo_user() {
+        return to_user;
+    }
+
+    public void setTo_user(User to_user) {
+        this.to_user = to_user;
+    }
+
+    public int getFrom_money() {
+        return from_money;
+    }
+
+    public void setFrom_money(int from_money) {
+        this.from_money = from_money;
+    }
+
+    public int getTo_money() {
+        return to_money;
+    }
+
+    public void setTo_money(int to_money) {
+        this.to_money = to_money;
+    }
+
+    public boolean isIs_closed() {
+        return is_closed;
+    }
+
+    public void setIs_closed(boolean is_closed) {
+        this.is_closed = is_closed;
+    }
+
+    public Date getClosing_date() {
+        return closing_date;
+    }
+
+    public void setClosing_date(Date closing_date) {
+        this.closing_date = closing_date;
+    }
+
+    public Time getClosing_time() {
+        return closing_time;
+    }
+
+    public void setClosing_time(Time closing_time) {
+        this.closing_time = closing_time;
+    }
+//
+//    public Auction getAuction() {
+//        return auction;
+//    }
+//
+//    public void setAuction(Auction auction) {
+//        this.auction = auction;
+//    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public String toString() {
         return "Contract{" +
@@ -98,9 +177,5 @@ public class Contract {
                 ", closing_date=" + closing_date +
                 ", closing_time=" + closing_time +
                 '}';
-    }
-
-    public void addItem(Item item) {
-        this.items.add(item);
     }
 }

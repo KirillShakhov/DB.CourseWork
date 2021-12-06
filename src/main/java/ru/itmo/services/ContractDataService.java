@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.itmo.entity.Contract;
 import ru.itmo.repository.CustomizedContractCrudRepository;
-import ru.itmo.repository.CustomizedItemsCrudRepository;
-import ru.itmo.repository.CustomizedUserCrudRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -18,21 +16,17 @@ import java.util.Optional;
 
 @Service
 public class ContractDataService {
-    private final CustomizedUserCrudRepository customizedUserCrudRepository;
-    private final CustomizedItemsCrudRepository customizedItemsCrudRepository;
     private final CustomizedContractCrudRepository customizedContractCrudRepository;
 
     @Autowired
-    public ContractDataService(CustomizedUserCrudRepository customizedUserCrudRepository, CustomizedItemsCrudRepository customizedItemsCrudRepository, CustomizedContractCrudRepository customizedContractCrudRepository) {
-        this.customizedUserCrudRepository = customizedUserCrudRepository;
-        this.customizedItemsCrudRepository = customizedItemsCrudRepository;
+    public ContractDataService(CustomizedContractCrudRepository customizedContractCrudRepository) {
         this.customizedContractCrudRepository = customizedContractCrudRepository;
     }
 
 
     @Transactional
     public List<Contract> findAll() {
-        return (List<Contract>) customizedContractCrudRepository.findAll();
+        return customizedContractCrudRepository.findAll();
     }
 
     @Transactional

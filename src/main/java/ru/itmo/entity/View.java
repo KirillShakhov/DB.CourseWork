@@ -11,7 +11,7 @@ public class View {
     public interface Photo { }
     public interface Item extends Car, Bumpers, Wheels { }
     public interface PurchaseItems extends Item { }
-    public interface Contract { }
+    public interface Contract extends Item { }
     public interface Auction { }
     public interface Article { }
     public interface Comment { }

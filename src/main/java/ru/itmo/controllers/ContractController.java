@@ -36,19 +36,16 @@ public class ContractController {
 
     @JsonView(View.Contract.class)
     @GetMapping("/api/v1/contract")
-    public Map<String, Object> getContract(@RequestParam(value = "for_me", required = false) Boolean forMe) {
+    public Map<String, Object> getContracts() {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            if (forMe == null) {
-                map.put("list", contractDataService.findAll());
-            } else {
-                map.put("list", contractDataService.findAll());
-            }
+            map.put("list", contractDataService.getById(107L));
             return map;
         } catch (Exception e) {
             map.put("status", "error");
             map.put("message", e.getMessage());
+            e.printStackTrace();
             return map;
         }
     }
@@ -61,7 +58,8 @@ public class ContractController {
                                               @RequestParam("to_money") Integer to_money,
                                               @RequestParam("closing_date") String closing_date,
                                               @RequestParam(value = "closing_time", required = false) String closing_time,
-                                              @RequestParam("items[]") List<Long> items
+                                              @RequestParam(value = "items", required = false) Long item,
+                                              @RequestParam(value = "items", required = false) List<Long> items
     ) {
         Map<String, String> map = new ManagedMap<>();
         map.put("status", "ok");
@@ -73,16 +71,28 @@ public class ContractController {
             Contract contract;
             if (to_user != null) {
                 Optional<User> toUser = userDataService.getByLogin(to_user);
+                System.out.println(to_user);
                 if (toUser.isEmpty()) throw new Exception("Человек не найден (" + to_user + ")");
                 contract = new Contract(user.get(), toUser.get(), from_money, to_money);
             } else {
                 contract = new Contract(user.get(), from_money, to_money);
             }
 
-            for (Long i : items) {
-                Optional<Item> item = itemsDataService.getById(i);
-                if (item.isEmpty()) throw new Exception("Один из предметов не найден");
-                contract.addItem(item.get());
+
+            if(items != null) {
+                for (Long i : items) {
+                    Optional<Item> it = itemsDataService.getById(i);
+                    if (it.isEmpty()) throw new Exception("Один из предметов не найден");
+                    contract.getItems().add(it.get());
+                }
+            }
+            else if(item != null){
+                Optional<Item> it = itemsDataService.getById(item);
+                if (it.isEmpty()) throw new Exception("Один из предметов не найден");
+                contract.getItems().add(it.get());
+            }
+            else{
+                throw new Exception("Предметы не выбраны");
             }
             LocalDate date = LocalDate.parse(closing_date);//"2018-05-05"
             Date d = convertToDateViaInstant(date);
