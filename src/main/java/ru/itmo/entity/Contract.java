@@ -1,13 +1,15 @@
 package ru.itmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 //CREATE TABLE "contracts" (
 //        "id_contract" bigserial ,
@@ -22,7 +24,10 @@ import java.util.List;
 //        );
 
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "contracts", schema = "public")
 public class Contract {
@@ -32,7 +37,7 @@ public class Contract {
     @JsonView(View.Contract.class)
     private Long id_contract;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "from_user", nullable = false)
     @JsonView(View.Contract.class)
     private User from_user;
@@ -63,15 +68,11 @@ public class Contract {
     @JsonView(View.Contract.class)
     private Time closing_time = new Time(0);
 
-//    @OneToOne(mappedBy = "last_customer", optional = true)
-//    private Auction auction;
+    @OneToOne(mappedBy = "contract", optional = true)
+    private Auction auction;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Item> items = new ArrayList<>();
-
-    public Contract(){
-
-    }
 
     public Contract(User from_user, User to_user, Integer from_money, Integer to_money) {
         this.from_user = from_user;
@@ -85,14 +86,6 @@ public class Contract {
         this.from_money = from_money;
         this.to_money = to_money;
     }
-//
-//    public Auction getAuction() {
-//        return auction;
-//    }
-//
-//    public void setAuction(Auction auction) {
-//        this.auction = auction;
-//    }
 
     @Override
     public String toString() {
@@ -106,5 +99,18 @@ public class Contract {
                 ", closing_date=" + closing_date +
                 ", closing_time=" + closing_time +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Contract contract = (Contract) o;
+        return id_contract != null && Objects.equals(id_contract, contract.id_contract);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

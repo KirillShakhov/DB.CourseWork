@@ -6,10 +6,8 @@ import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.itmo.entity.Contract;
-import ru.itmo.entity.Item;
-import ru.itmo.entity.User;
-import ru.itmo.entity.View;
+import ru.itmo.entity.*;
+import ru.itmo.services.AuctionDataService;
 import ru.itmo.services.ContractDataService;
 import ru.itmo.services.ItemsDataService;
 import ru.itmo.services.UserDataService;
@@ -22,27 +20,27 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class ContractController {
+public class AuctionController {
     private final ItemsDataService itemsDataService;
     private final UserDataService userDataService;
+    private final AuctionDataService auctionDataService;
     private final ContractDataService contractDataService;
 
     @Autowired
-    public ContractController(UserDataService userDataService, ItemsDataService itemsDataService, ContractDataService contractDataService) {
+    public AuctionController(UserDataService userDataService, ItemsDataService itemsDataService, AuctionDataService auctionDataService, ContractDataService contractDataService) {
         this.userDataService = userDataService;
         this.itemsDataService = itemsDataService;
+        this.auctionDataService = auctionDataService;
         this.contractDataService = contractDataService;
     }
 
-    @JsonView(View.Contract.class)
-    @GetMapping("/api/v1/contract")
-    public Map<String, Object> getContracts() {
+    @JsonView(View.Auction.class)
+    @GetMapping("/api/v1/auction")
+    public Map<String, Object> getAuction() {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            List<Contract> contract = contractDataService.findAll();
-            contract.removeIf(i -> i.getAuction() != null);
-            map.put("list", contract);
+            map.put("list", auctionDataService.findAll());
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -53,8 +51,8 @@ public class ContractController {
     }
 
     @JsonView(View.Item.class)
-    @GetMapping("/api/v1/contract/items")
-    public Map<String, Object> getContracts(@RequestParam("login") String login,
+    @GetMapping("/api/v1/auction/items")
+    public Map<String, Object> getAuction(@RequestParam("login") String login,
                                             @RequestParam("pass") String pass,
                                             @RequestParam("id") Long id) {
         Map<String, Object> map = new ManagedMap<>();
@@ -65,10 +63,10 @@ public class ContractController {
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
 
-            Optional<Contract> contract = contractDataService.getById(id);
-            if (contract.isEmpty()) throw new Exception("Контракт не существует");
+            Optional<Auction> auction = auctionDataService.getById(id);
+            if (auction.isEmpty()) throw new Exception("Аукцион не существует");
 
-            map.put("list", contract.get().getItems());
+            map.put("list", auction.get().getContract().getItems());
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -78,8 +76,8 @@ public class ContractController {
         }
     }
 
-    @GetMapping("/api/v1/contract/create")
-    public Map<String, String> createContract(@RequestParam("login") String login,
+    @GetMapping("/api/v1/auction/create")
+    public Map<String, String> createAuction(@RequestParam("login") String login,
                                               @RequestParam("pass") String pass,
                                               @RequestParam(value = "to_user", required = false) String to_user,
                                               @RequestParam("from_money") Integer from_money,
@@ -125,7 +123,10 @@ public class ContractController {
             LocalDate date = LocalDate.parse(closing_date);//"2018-05-05"
             Date d = convertToDateViaInstant(date);
             contract.setClosing_date(d);
+
+            Auction auction = new Auction(contract);
             contractDataService.save(contract);
+            auctionDataService.save(auction);
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -134,8 +135,8 @@ public class ContractController {
         }
     }
 
-    @GetMapping("/api/v1/contract/remove")
-    public Map<String, String> removeContract(@RequestParam("login") String login,
+    @GetMapping("/api/v1/auction/remove")
+    public Map<String, String> removeAuction(@RequestParam("login") String login,
                                               @RequestParam("pass") String pass,
                                               @RequestParam("id") Long id
     ) {
@@ -146,11 +147,11 @@ public class ContractController {
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
 
-            Optional<Contract> contract = contractDataService.getById(id);
-            if (contract.isEmpty()) throw new Exception("Контракт не найден");
-            if (!contract.get().getFrom_user().getUsername().equals(user.get().getUsername()))
-                throw new Exception("Контракт вам не пренадлежит");
-            contractDataService.removeById(contract.get().getId_contract());
+            Optional<Auction> auction = auctionDataService.getById(id);
+            if (auction.isEmpty()) throw new Exception("Аукцион не найден");
+            if (!auction.get().getContract().getFrom_user().getUsername().equals(user.get().getUsername()))
+                throw new Exception("Аукцион вам не пренадлежит");
+            auctionDataService.removeById(auction.get().getId());
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -159,35 +160,35 @@ public class ContractController {
         }
     }
 
-    @GetMapping("/api/v1/contract/confirm")
-    public Map<String, String> confirmContract(@RequestParam("login") String login,
-                                              @RequestParam("pass") String pass,
-                                              @RequestParam("id") Long id
-    ) {
-        Map<String, String> map = new ManagedMap<>();
-        map.put("status", "ok");
-        try {
-            Optional<User> user = userDataService.getByLogin(login);
-            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
-            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-
-            Optional<Contract> contract = contractDataService.getById(id);
-            if (contract.isEmpty()) throw new Exception("Контракт не найден");
-            if (!contract.get().getTo_user().getUsername().equals(user.get().getUsername()) && contract.get().getTo_user() != null)
-                throw new Exception("Контракт предназначен не вам");
-
-            contractDataService.confirm(user.get(), id);
-            contractDataService.removeById(contract.get().getId_contract());
-            return map;
-        } catch (Exception e) {
-            map.put("status", "error");
-            map.put("message", e.getMessage());
-            return map;
-        }
-    }
+//    @GetMapping("/api/v1/contract/confirm")
+//    public Map<String, String> confirmContract(@RequestParam("login") String login,
+//                                              @RequestParam("pass") String pass,
+//                                              @RequestParam("id") Long id
+//    ) {
+//        Map<String, String> map = new ManagedMap<>();
+//        map.put("status", "ok");
+//        try {
+//            Optional<User> user = userDataService.getByLogin(login);
+//            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+//            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+//
+//            Optional<Contract> contract = auctionDataService.getById(id);
+//            if (contract.isEmpty()) throw new Exception("Контракт не найден");
+//            if (!contract.get().getTo_user().getUsername().equals(user.get().getUsername()) && contract.get().getTo_user() != null)
+//                throw new Exception("Контракт предназначен не вам");
+//
+//            auctionDataService.confirm(user.get(), id);
+//            auctionDataService.removeById(contract.get().getId_contract());
+//            return map;
+//        } catch (Exception e) {
+//            map.put("status", "error");
+//            map.put("message", e.getMessage());
+//            return map;
+//        }
+//    }
 
     public Date convertToDateViaInstant(LocalDate dateToConvert) {
-        return java.util.Date.from(dateToConvert.atStartOfDay()
+        return Date.from(dateToConvert.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }

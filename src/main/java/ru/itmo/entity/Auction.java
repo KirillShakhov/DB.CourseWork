@@ -25,19 +25,24 @@ public class Auction {
     @JsonView(View.Auction.class)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "contract", nullable = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "contract")
     @JsonView(View.Auction.class)
     private Contract contract;
 
     @Column(name = "last_bet_size")
     @JsonView(View.Auction.class)
-    private int last_bet_size;
+    private Integer last_bet_size;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_customer")
     @JsonView(View.Auction.class)
     private User last_customer;
+
+
+    public Auction(Contract contract){
+        this.contract = contract;
+    }
 
     @Override
     public String toString() {

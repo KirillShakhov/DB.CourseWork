@@ -2,18 +2,18 @@ package ru.itmo.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.itmo.entity.Contract;
+import ru.itmo.entity.Auction;
 
 /**
  * Реализация CRUD для Token
  */
 @Repository
-public interface CustomizedContractCrudRepository extends CrudRepository<Contract, Long> {
+public interface CustomizedAuctionCrudRepository extends CrudRepository<Auction, Long> {
 //    @Transactional
 //    @Query(value = "select * from contracts where to_user = :username", nativeQuery = true)
 //    List<Contract> findForUser(@Param("username") Long login);
 
 //    @Transactional
-//    @Query(value = "select * from contracts", nativeQuery = true)
-//    List<Contract> findAll();
+//    @Query(value = "select * from auctions", nativeQuery = true)
+//    List<Auction> findAll();
 }

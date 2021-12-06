@@ -12,7 +12,7 @@ public class View {
     public interface Item extends Car, Bumpers, Wheels { }
     public interface PurchaseItems extends Item { }
     public interface Contract extends Item { }
-    public interface Auction { }
+    public interface Auction extends Contract { }
     public interface Article { }
     public interface Comment { }
 }
