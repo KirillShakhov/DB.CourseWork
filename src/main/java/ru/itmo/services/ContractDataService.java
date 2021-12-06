@@ -26,7 +26,7 @@ public class ContractDataService {
 
     @Transactional
     public List<Contract> findAll() {
-        return customizedContractCrudRepository.findAll();
+        return (List<Contract>) customizedContractCrudRepository.findAll();
     }
 
     @Transactional

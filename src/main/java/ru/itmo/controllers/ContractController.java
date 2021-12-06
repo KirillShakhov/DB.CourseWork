@@ -40,7 +40,7 @@ public class ContractController {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            map.put("list", contractDataService.getById(107L));
+            map.put("list", contractDataService.findAll());
             return map;
         } catch (Exception e) {
             map.put("status", "error");

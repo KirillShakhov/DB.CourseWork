@@ -65,7 +65,6 @@ public class Contract {
 //    private Auction auction;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JsonView(View.Contract.class)
     private List<Item> items = new ArrayList<>();
 
     public Contract(){
