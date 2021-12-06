@@ -157,6 +157,33 @@ public class ContractController {
         }
     }
 
+    @GetMapping("/api/v1/contract/confirm")
+    public Map<String, String> confirmContract(@RequestParam("login") String login,
+                                              @RequestParam("pass") String pass,
+                                              @RequestParam("id") Long id
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Contract> contract = contractDataService.getById(id);
+            if (contract.isEmpty()) throw new Exception("Контракт не найден");
+            if (!contract.get().getTo_user().getUsername().equals(user.get().getUsername()) && contract.get().getTo_user() != null)
+                throw new Exception("Контракт предназначен не вам");
+
+            contractDataService.confirm(user.get(), id);
+            contractDataService.removeById(contract.get().getId_contract());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
+
     public Date convertToDateViaInstant(LocalDate dateToConvert) {
         return java.util.Date.from(dateToConvert.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
