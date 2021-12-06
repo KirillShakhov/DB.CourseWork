@@ -50,6 +50,32 @@ public class ContractController {
         }
     }
 
+    @JsonView(View.Item.class)
+    @GetMapping("/api/v1/contract/items")
+    public Map<String, Object> getContracts(@RequestParam("login") String login,
+                                            @RequestParam("pass") String pass,
+                                            @RequestParam("id") Long id) {
+        Map<String, Object> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            Optional<User> user = userDataService.getByLogin(login);
+
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Contract> contract = contractDataService.getById(id);
+            if (contract.isEmpty()) throw new Exception("Контракт не существует");
+
+            map.put("list", contract.get().getItems());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            e.printStackTrace();
+            return map;
+        }
+    }
+
     @GetMapping("/api/v1/contract/create")
     public Map<String, String> createContract(@RequestParam("login") String login,
                                               @RequestParam("pass") String pass,
