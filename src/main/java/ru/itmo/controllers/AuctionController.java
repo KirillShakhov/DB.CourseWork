@@ -40,7 +40,11 @@ public class AuctionController {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
-            map.put("list", auctionDataService.findAll());
+            auctionDataService.updateAuctions();
+
+            List<Auction> list = auctionDataService.findAll();
+            list.removeIf(i -> i.getContract().is_closed());
+            map.put("list", list);
             return map;
         } catch (Exception e) {
             map.put("status", "error");
@@ -50,7 +54,7 @@ public class AuctionController {
         }
     }
 
-    @JsonView(View.Item.class)
+    @JsonView(View.Auction.class)
     @GetMapping("/api/v1/auction/items")
     public Map<String, Object> getAuction(@RequestParam("login") String login,
                                             @RequestParam("pass") String pass,
@@ -58,6 +62,8 @@ public class AuctionController {
         Map<String, Object> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
+            auctionDataService.updateAuctions();
+
             Optional<User> user = userDataService.getByLogin(login);
 
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
@@ -90,6 +96,8 @@ public class AuctionController {
         Map<String, String> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
+            auctionDataService.updateAuctions();
+
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
@@ -143,6 +151,7 @@ public class AuctionController {
         Map<String, String> map = new ManagedMap<>();
         map.put("status", "ok");
         try {
+            auctionDataService.updateAuctions();
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
@@ -160,32 +169,48 @@ public class AuctionController {
         }
     }
 
-//    @GetMapping("/api/v1/contract/confirm")
-//    public Map<String, String> confirmContract(@RequestParam("login") String login,
-//                                              @RequestParam("pass") String pass,
-//                                              @RequestParam("id") Long id
-//    ) {
-//        Map<String, String> map = new ManagedMap<>();
-//        map.put("status", "ok");
-//        try {
-//            Optional<User> user = userDataService.getByLogin(login);
-//            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
-//            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
-//
-//            Optional<Contract> contract = auctionDataService.getById(id);
-//            if (contract.isEmpty()) throw new Exception("Контракт не найден");
-//            if (!contract.get().getTo_user().getUsername().equals(user.get().getUsername()) && contract.get().getTo_user() != null)
-//                throw new Exception("Контракт предназначен не вам");
-//
-//            auctionDataService.confirm(user.get(), id);
-//            auctionDataService.removeById(contract.get().getId_contract());
-//            return map;
-//        } catch (Exception e) {
-//            map.put("status", "error");
-//            map.put("message", e.getMessage());
-//            return map;
-//        }
-//    }
+    @GetMapping("/api/v1/auction/bet")
+    public Map<String, String> betAuction(@RequestParam("login") String login,
+                                              @RequestParam("pass") String pass,
+                                              @RequestParam("id") Long id,
+                                              @RequestParam("price") Integer price
+    ) {
+        Map<String, String> map = new ManagedMap<>();
+        map.put("status", "ok");
+        try {
+            auctionDataService.updateAuctions();
+            Optional<User> user = userDataService.getByLogin(login);
+            if (user.isEmpty()) throw new Exception("Аккаунта не существует");
+            if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
+
+            Optional<Auction> auction = auctionDataService.getById(id);
+            if (auction.isEmpty()) throw new Exception("Аукцион не найден");
+            if(auction.get().getContract().is_closed()) throw new Exception("Аукцион закрыт");
+            if(auction.get().getLast_bet_size() != null && auction.get().getLast_customer() != null) {
+                if (auction.get().getLast_bet_size() != null && price < auction.get().getLast_bet_size())
+                    throw new Exception("Ставка меньше предыдушей");
+                if (auction.get().getLast_bet_size() == null && price < auction.get().getContract().getFrom_money())
+                    throw new Exception("Ставка меньше назначенной");
+            }
+
+
+            if(price >= auction.get().getContract().getFrom_money()){
+                auctionDataService.buy(user.get(), price, id);
+            }
+
+            if(price > user.get().getBalance()) throw new Exception("Недостаточно денег");
+
+            auction.get().setLast_bet_size(price);
+            auction.get().setLast_customer(user.get());
+            auctionDataService.save(auction.get());
+            return map;
+        } catch (Exception e) {
+            map.put("status", "error");
+            map.put("message", e.getMessage());
+            e.printStackTrace();
+            return map;
+        }
+    }
 
     public Date convertToDateViaInstant(LocalDate dateToConvert) {
         return Date.from(dateToConvert.atStartOfDay()

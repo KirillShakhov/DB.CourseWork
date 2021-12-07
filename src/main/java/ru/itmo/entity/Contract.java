@@ -68,7 +68,7 @@ public class Contract {
     @JsonView(View.Contract.class)
     private Time closing_time = new Time(0);
 
-    @OneToOne(mappedBy = "contract", optional = true)
+    @OneToOne(mappedBy = "contract", optional = true, cascade = CascadeType.ALL)
     private Auction auction;
 
     @OneToMany(fetch = FetchType.EAGER)
