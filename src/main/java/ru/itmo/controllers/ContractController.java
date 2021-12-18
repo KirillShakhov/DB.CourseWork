@@ -182,21 +182,20 @@ public class ContractController {
             LocalDate date = LocalDate.now();
             LocalTime time = LocalTime.now();
 
-            System.out.println(contract.get().getClosing_date());
-            System.out.println(date);
-            System.out.println(date.isAfter(convertToLocalDateViaInstant(contract.get().getClosing_date())));
-            System.out.println(date.isEqual(convertToLocalDateViaInstant(contract.get().getClosing_date())));
-
-            System.out.println(contract.get().getClosing_time());
-            System.out.println(time);
-            System.out.println(time.isAfter(contract.get().getClosing_time().toLocalTime()));
+//            System.out.println(contract.get().getClosing_date());
+//            System.out.println(date);
+//            System.out.println(date.isAfter(convertToLocalDateViaInstant(contract.get().getClosing_date())));
+//            System.out.println(date.isEqual(convertToLocalDateViaInstant(contract.get().getClosing_date())));
+//
+//            System.out.println(contract.get().getClosing_time());
+//            System.out.println(time);
+//            System.out.println(time.isAfter(contract.get().getClosing_time().toLocalTime()));
 
             if (date.isAfter(convertToLocalDateViaInstant(contract.get().getClosing_date()))) {
                 contract.get().set_closed(true);
                 contractDataService.removeById(contract.get().getId_contract());
                 throw new Exception("Контракт закрыт");
             }
-
             else if (date.isEqual(convertToLocalDateViaInstant(contract.get().getClosing_date())) && time.isAfter(contract.get().getClosing_time().toLocalTime())) {
                 contract.get().set_closed(true);
                 contractDataService.removeById(contract.get().getId_contract());
@@ -221,11 +220,11 @@ public class ContractController {
         }
     }
 
-    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+    private LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
         return LocalDate.ofInstant(new java.util.Date(dateToConvert.getTime()).toInstant(), ZoneId.systemDefault());
     }
 
-    public Date convertToDateViaInstant(LocalDate dateToConvert) {
+    private Date convertToDateViaInstant(LocalDate dateToConvert) {
         return java.util.Date.from(dateToConvert.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());

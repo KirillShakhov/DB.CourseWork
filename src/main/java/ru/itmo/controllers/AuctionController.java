@@ -12,7 +12,9 @@ import ru.itmo.services.ContractDataService;
 import ru.itmo.services.ItemsDataService;
 import ru.itmo.services.UserDataService;
 
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -132,6 +134,10 @@ public class AuctionController {
             Date d = convertToDateViaInstant(date);
             contract.setClosing_date(d);
 
+            LocalTime t = LocalTime.parse(closing_time) ;
+            Time time = Time.valueOf(t);
+            contract.setClosing_time(time);
+
             Auction auction = new Auction(contract);
             contractDataService.save(contract);
             auctionDataService.save(auction);
@@ -186,25 +192,26 @@ public class AuctionController {
 
             Optional<Auction> auction = auctionDataService.getById(id);
             if (auction.isEmpty()) throw new Exception("Аукцион не найден");
-            if(auction.get().getContract().is_closed()) throw new Exception("Аукцион закрыт");
-            if(auction.get().getLast_bet_size() != null && auction.get().getLast_customer() != null) {
-                if (auction.get().getLast_bet_size() != null && price < auction.get().getLast_bet_size())
-                    throw new Exception("Ставка меньше предыдушей");
-                if (auction.get().getLast_bet_size() == null && price < auction.get().getContract().getFrom_money())
-                    throw new Exception("Ставка меньше назначенной");
-                if (auction.get().getLast_bet_size() != null && auction.get().getLast_bet_size() >= auction.get().getContract().getTo_money())
-                    throw new Exception("Прошлая ставка победила");
-            }
 
-            if(price >= auction.get().getContract().getFrom_money()){
-                auctionDataService.buy(user.get(), price, id);
-            }
+            if(auction.get().getContract().is_closed()) throw new Exception("Аукцион закрыт");
+
+            if (auction.get().getLast_bet_size() != null && price < auction.get().getLast_bet_size())
+                throw new Exception("Ставка меньше предыдушей");
+            if (auction.get().getLast_bet_size() == null && price < auction.get().getContract().getFrom_money())
+                throw new Exception("Ставка меньше назначенной");
+            if (auction.get().getLast_bet_size() != null && auction.get().getLast_bet_size() >= auction.get().getContract().getTo_money())
+                throw new Exception("Прошлая ставка победила");
 
             if(price > user.get().getBalance()) throw new Exception("Недостаточно денег");
 
-            auction.get().setLast_bet_size(price);
-            auction.get().setLast_customer(user.get());
-            auctionDataService.save(auction.get());
+            if(price >= auction.get().getContract().getTo_money()) {
+                auctionDataService.buy(user.get(), price, id);
+            }
+            else {
+                auction.get().setLast_bet_size(price);
+                auction.get().setLast_customer(user.get());
+                auctionDataService.save(auction.get());
+            }
             return map;
         } catch (Exception e) {
             map.put("status", "error");

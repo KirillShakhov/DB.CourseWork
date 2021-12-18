@@ -10,7 +10,9 @@ import ru.itmo.repository.CustomizedItemsCrudRepository;
 import ru.itmo.repository.CustomizedUserCrudRepository;
 
 import javax.transaction.Transactional;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,12 +62,14 @@ public class AuctionDataService {
     public void updateAuctions() {
         try {
             List<Auction> auction = findAll();
-            Date date = new Date(System.currentTimeMillis());
-            Time time = new Time(System.currentTimeMillis());
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
+
+
 
             for (Auction i : auction) {
                 if (!i.getContract().is_closed()) {
-                    if (date.before(i.getContract().getClosing_date()) && time.before(i.getContract().getClosing_time())) {
+                    if (date.isAfter(convertToLocalDateViaInstant(i.getContract().getClosing_date())) || date.isEqual(convertToLocalDateViaInstant(i.getContract().getClosing_date())) && time.isAfter(i.getContract().getClosing_time().toLocalTime())) {
                         if (i.getLast_customer() != null) {
                             i.getContract().getItems().forEach(r -> {
                                 r.setOwner(i.getLast_customer());
@@ -77,6 +81,7 @@ public class AuctionDataService {
                             customizedUserCrudRepository.save(i.getLast_customer());
                             customizedUserCrudRepository.save(i.getContract().getFrom_user());
                             i.getContract().set_closed(true);
+                            System.out.println("Deleted");
                             customizedAuctionCrudRepository.deleteById(i.getId());
                             customizedContractCrudRepository.delete(i.getContract());
                         }
@@ -86,6 +91,10 @@ public class AuctionDataService {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return LocalDate.ofInstant(new java.util.Date(dateToConvert.getTime()).toInstant(), ZoneId.systemDefault());
     }
 
     public void buy(User user, Integer price, Long id) throws Exception {
