@@ -14,8 +14,8 @@ import ru.itmo.services.ContractDataService;
 import ru.itmo.services.ItemsDataService;
 import ru.itmo.services.UserDataService;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.sql.Time;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -119,12 +119,15 @@ public class ContractController {
                 if (it.isEmpty()) throw new Exception("Один из предметов не найден");
                 contract.getItems().add(it.get());
             }
-            else{
-                throw new Exception("Предметы не выбраны");
-            }
+            else throw new Exception("Предметы не выбраны");
+
             LocalDate date = LocalDate.parse(closing_date);//"2018-05-05"
             Date d = convertToDateViaInstant(date);
             contract.setClosing_date(d);
+
+            LocalTime t = LocalTime.parse(closing_time) ;
+            Time time = Time.valueOf(t);
+            contract.setClosing_time(time);
             contractDataService.save(contract);
             return map;
         } catch (Exception e) {
@@ -171,19 +174,55 @@ public class ContractController {
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
 
+
             Optional<Contract> contract = contractDataService.getById(id);
             if (contract.isEmpty()) throw new Exception("Контракт не найден");
-            if (!contract.get().getTo_user().getUsername().equals(user.get().getUsername()) && contract.get().getTo_user() != null)
+            if(contract.get().is_closed()) {throw new Exception("Контракт закрыт");}
+
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
+
+            System.out.println(contract.get().getClosing_date());
+            System.out.println(date);
+            System.out.println(date.isAfter(convertToLocalDateViaInstant(contract.get().getClosing_date())));
+            System.out.println(date.isEqual(convertToLocalDateViaInstant(contract.get().getClosing_date())));
+
+            System.out.println(contract.get().getClosing_time());
+            System.out.println(time);
+            System.out.println(time.isAfter(contract.get().getClosing_time().toLocalTime()));
+
+            if (date.isAfter(convertToLocalDateViaInstant(contract.get().getClosing_date()))) {
+                contract.get().set_closed(true);
+                contractDataService.removeById(contract.get().getId_contract());
+                throw new Exception("Контракт закрыт");
+            }
+
+            else if (date.isEqual(convertToLocalDateViaInstant(contract.get().getClosing_date())) && time.isAfter(contract.get().getClosing_time().toLocalTime())) {
+                contract.get().set_closed(true);
+                contractDataService.removeById(contract.get().getId_contract());
+                throw new Exception("Контракт закрыт");
+            }
+
+            if (contract.get().getTo_user() != null && !contract.get().getTo_user().getUsername().equals(user.get().getUsername()))
                 throw new Exception("Контракт предназначен не вам");
 
+
             contractDataService.confirm(user.get(), id);
+
+
             contractDataService.removeById(contract.get().getId_contract());
+
             return map;
         } catch (Exception e) {
             map.put("status", "error");
             map.put("message", e.getMessage());
+            e.printStackTrace();
             return map;
         }
+    }
+
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return LocalDate.ofInstant(new java.util.Date(dateToConvert.getTime()).toInstant(), ZoneId.systemDefault());
     }
 
     public Date convertToDateViaInstant(LocalDate dateToConvert) {

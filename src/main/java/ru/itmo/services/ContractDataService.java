@@ -52,6 +52,7 @@ public class ContractDataService {
     public void confirm(User user, Long id) throws Exception {
         Optional<Contract> contract = customizedContractCrudRepository.findById(id);
         if(contract.isEmpty()) throw new Exception("Контракт не найден");
+
         User from_user = contract.get().getFrom_user();
         from_user.setBalance(from_user.getBalance()-contract.get().getFrom_money());
         from_user.setBalance(from_user.getBalance()+contract.get().getTo_money());
@@ -59,9 +60,8 @@ public class ContractDataService {
         user.setBalance(user.getBalance()+contract.get().getFrom_money());
         user.setBalance(user.getBalance()-contract.get().getTo_money());
 
-        contract.get().getItems().forEach(i -> {
-            i.setOwner(user);
-        });
+        contract.get().getItems().forEach(i -> i.setOwner(user));
+
         customizedUserCrudRepository.save(from_user);
         customizedUserCrudRepository.save(user);
         customizedContractCrudRepository.save(contract.get());

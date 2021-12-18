@@ -179,6 +179,7 @@ public class AuctionController {
         map.put("status", "ok");
         try {
             auctionDataService.updateAuctions();
+
             Optional<User> user = userDataService.getByLogin(login);
             if (user.isEmpty()) throw new Exception("Аккаунта не существует");
             if (!user.get().getPass().equals(pass)) throw new Exception("Пароль неправильный");
@@ -191,8 +192,9 @@ public class AuctionController {
                     throw new Exception("Ставка меньше предыдушей");
                 if (auction.get().getLast_bet_size() == null && price < auction.get().getContract().getFrom_money())
                     throw new Exception("Ставка меньше назначенной");
+                if (auction.get().getLast_bet_size() != null && auction.get().getLast_bet_size() >= auction.get().getContract().getTo_money())
+                    throw new Exception("Прошлая ставка победила");
             }
-
 
             if(price >= auction.get().getContract().getFrom_money()){
                 auctionDataService.buy(user.get(), price, id);
