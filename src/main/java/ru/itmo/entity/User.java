@@ -29,7 +29,7 @@ public class User {
 
     @Id
     @Column(name = "username", unique = true, nullable = false)
-    @JsonView({View.User.class, View.Creator.class, View.Article.class, View.Bumpers.class, View.Car.class, View.Wheels.class})
+    @JsonView({View.User.class, View.Creator.class, View.Article.class})
     private String username;
 
     @Lob
