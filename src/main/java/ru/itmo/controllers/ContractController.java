@@ -111,6 +111,7 @@ public class ContractController {
                 for (Long i : items) {
                     Optional<Item> it = itemsDataService.getById(i);
                     if (it.isEmpty()) throw new Exception("Один из предметов не найден");
+                    if (it.get().getPurchase_items() != null) throw new Exception("Один из предметов уже на продаже");
                     contract.getItems().add(it.get());
                 }
             }

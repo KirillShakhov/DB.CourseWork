@@ -59,7 +59,7 @@ public class Item {
     @JsonView(View.Item.class)
     private User owner;
 
-    @OneToOne(mappedBy = "item")
+    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY)
     private PurchaseItems purchase_items;
 
     public Item(User user, String description, String real_photo) {
