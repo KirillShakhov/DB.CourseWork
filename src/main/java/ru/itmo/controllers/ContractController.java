@@ -124,10 +124,11 @@ public class ContractController {
             LocalDate date = LocalDate.parse(closing_date);//"2018-05-05"
             Date d = convertToDateViaInstant(date);
             contract.setClosing_date(d);
-
-            LocalTime t = LocalTime.parse(closing_time) ;
-            Time time = Time.valueOf(t);
-            contract.setClosing_time(time);
+            if(closing_time != null) {
+                LocalTime t = LocalTime.parse(closing_time);
+                Time time = Time.valueOf(t);
+                contract.setClosing_time(time);
+            }
             contractDataService.save(contract);
             return map;
         } catch (Exception e) {

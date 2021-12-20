@@ -134,10 +134,11 @@ public class AuctionController {
             Date d = convertToDateViaInstant(date);
             contract.setClosing_date(d);
 
-            LocalTime t = LocalTime.parse(closing_time) ;
-            Time time = Time.valueOf(t);
-            contract.setClosing_time(time);
-
+            if(closing_time != null) {
+                LocalTime t = LocalTime.parse(closing_time);
+                Time time = Time.valueOf(t);
+                contract.setClosing_time(time);
+            }
             Auction auction = new Auction(contract);
             contractDataService.save(contract);
             auctionDataService.save(auction);
