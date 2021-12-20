@@ -49,8 +49,9 @@ public class AuctionDataService {
     }
 
     @Transactional
-    public void removeById(Long id) {
-        customizedAuctionCrudRepository.deleteById(id);
+    public void remove(Auction auction) {
+        customizedAuctionCrudRepository.deleteById(auction.getId());
+        customizedContractCrudRepository.delete(auction.getContract());
     }
 
     @Transactional

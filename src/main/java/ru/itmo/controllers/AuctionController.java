@@ -168,7 +168,8 @@ public class AuctionController {
             if (auction.isEmpty()) throw new Exception("Аукцион не найден");
             if (!auction.get().getContract().getFrom_user().getUsername().equals(user.get().getUsername()))
                 throw new Exception("Аукцион вам не пренадлежит");
-            auctionDataService.removeById(auction.get().getId());
+            auctionDataService.remove(auction.get());
+
             return map;
         } catch (Exception e) {
             map.put("status", "error");
